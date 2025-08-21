@@ -108,4 +108,14 @@ export interface ApiSearchResponse extends ApiResponse<{
   total: number;      // 总结果数
   count: number;      // 当前页结果数
   list: ApiSearchResultItem[]; // 结果列表
-}> {} 
+}> {}
+
+// 保存分类所需参数
+export interface SaveCategoryParams {
+  name: string;         // 分类名称
+  project_id: string;   // 项目ID
+  desc?: string;        // 分类描述
+}
+
+// 保存分类返回值
+export interface SaveCategoryResponse extends ApiResponse<CategoryInfo> {} 

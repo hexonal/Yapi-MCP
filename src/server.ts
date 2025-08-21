@@ -477,6 +477,53 @@ export class YapiMcpServer {
       }
     );
 
+    // 保存分类
+    this.server.tool(
+      "yapi_save_category",
+      "在YApi项目中创建新的接口分类",
+      {
+        projectId: z.string().describe("YApi项目ID"),
+        name: z.string().describe("分类名称"),
+        desc: z.string().optional().describe("分类描述")
+      },
+      async ({ projectId, name, desc }) => {
+        try {
+          this.logger.info(`创建分类: ${name}, 项目ID: ${projectId}`);
+          
+          const response = await this.yapiService.saveCategory({
+            project_id: projectId,
+            name,
+            desc: desc || ""
+          });
+          
+          this.logger.info(`分类创建成功: ${name} (ID: ${response.data._id})`);
+          
+          // 格式化返回数据
+          const formattedResponse = {
+            操作结果: "分类创建成功",
+            分类信息: {
+              分类ID: response.data._id,
+              分类名称: response.data.name,
+              分类描述: response.data.desc,
+              所属项目ID: response.data.project_id,
+              创建时间: new Date(response.data.add_time).toLocaleString(),
+              更新时间: new Date(response.data.up_time).toLocaleString()
+            },
+            使用提示: `分类创建成功！您现在可以使用分类ID ${response.data._id} 在该分类下创建接口`
+          };
+
+          return {
+            content: [{ type: "text", text: JSON.stringify(formattedResponse, null, 2) }],
+          };
+        } catch (error) {
+          this.logger.error(`创建分类 ${name} 时出错:`, error);
+          return {
+            content: [{ type: "text", text: `创建分类出错: ${error}` }],
+          };
+        }
+      }
+    );
+
     // 获取分类
     this.server.tool(
       "yapi_get_categories",

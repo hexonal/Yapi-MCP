@@ -10,7 +10,9 @@ import type {
   GetProjectResponse,
   GetCategoryListResponse,
   SaveApiInterfaceParams,
-  SaveApiResponse
+  SaveApiResponse,
+  SaveCategoryParams,
+  SaveCategoryResponse
 } from "./types";
 
 export class YApiService {
@@ -479,6 +481,43 @@ export class YApiService {
       return response.data.list;
     } catch (error) {
       this.logger.error(`获取分类接口列表失败, projectId=${projectId}, catId=${catId}:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * 创建新的接口分类
+   * @param params 分类参数
+   */
+  async saveCategory(params: SaveCategoryParams): Promise<SaveCategoryResponse> {
+    try {
+      const projectId = params.project_id;
+      
+      this.logger.debug(`创建分类, projectId=${projectId}, name=${params.name}`);
+      
+      const response = await this.request<SaveCategoryResponse>(
+        "/api/interface/add_cat",
+        {
+          name: params.name,
+          project_id: parseInt(params.project_id), // YApi需要数字类型的project_id
+          desc: params.desc || ""
+        },
+        projectId,
+        'POST'
+      );
+      
+      if (response.errcode !== 0) {
+        throw new Error(response.errmsg || "创建分类失败");
+      }
+      
+      // 创建成功后，清除对应项目的分类缓存，以便下次获取时获得最新数据
+      this.categoryListCache.delete(projectId);
+      
+      this.logger.info(`分类创建成功: ${params.name} (ID: ${response.data._id})`);
+      
+      return response;
+    } catch (error) {
+      this.logger.error(`创建分类失败:`, error);
       throw error;
     }
   }

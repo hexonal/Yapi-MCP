@@ -41,6 +41,7 @@ export async function startServer(): Promise<void> {
   logger.info("- yapi_search_apis: 搜索YApi接口");
   logger.info("- yapi_list_projects: 列出YApi的项目ID和项目名称");
   logger.info("- yapi_get_categories: 获取YApi项目下的接口分类列表");
+  logger.info("- yapi_save_category: 创建新的接口分类");
 }
 
 // If this file is being run directly, start the server

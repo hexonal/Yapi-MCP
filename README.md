@@ -23,8 +23,12 @@ Yapi Auto MCP Server 是一个基于 [Model Context Protocol](https://modelconte
 - **yapi_list_projects**: 列出所有可访问的项目
 - **yapi_get_categories**: 获取项目下的接口分类和接口列表
 
-### ✏️ 接口管理
+### ✏️ 接口和分类管理
 
+- **yapi_save_category**: 创建新的接口分类
+  - 支持在指定项目下创建分类
+  - 自动清除缓存保证数据一致性
+  - 返回详细的分类信息
 - **yapi_save_api**: 创建新接口或更新现有接口
   - 支持完整的接口定义（路径、方法、参数、请求体、响应等）
   - 支持 JSON Schema 和表单数据格式
@@ -65,10 +69,65 @@ Yapi Auto MCP Server 是一个基于 [Model Context Protocol](https://modelconte
 
 ## 安装配置
 
-### 方式一：npx 直接使用（推荐）
+### 方式一：Git 仓库直接使用（推荐）
 
-无需本地安装，通过 npx 直接运行：
+无需本地安装，直接从 Git 仓库运行最新版本：
 
+**使用 npx**：
+```json
+{
+  "mcpServers": {
+    "yapi-auto-mcp": {
+      "command": "npx",
+      "args": [
+        "--package",
+        "git+https://github.com/lzsheng/Yapi-MCP.git",
+        "yapi-mcp",
+        "--stdio",
+        "--yapi-base-url=https://yapi.example.com",
+        "--yapi-token=projectId:token1,projectId2:token2",
+        "--yapi-cache-ttl=10",
+        "--yapi-log-level=info"
+      ]
+    }
+  }
+}
+```
+
+**使用 bunx (Bun 用户)**：
+```json
+{
+  "mcpServers": {
+    "yapi-auto-mcp": {
+      "command": "bunx",
+      "args": [
+        "--bun",
+        "git+https://github.com/lzsheng/Yapi-MCP.git",
+        "--stdio",
+        "--yapi-base-url=https://yapi.example.com",
+        "--yapi-token=projectId:token1,projectId2:token2",
+        "--yapi-cache-ttl=10",
+        "--yapi-log-level=info"
+      ]
+    }
+  }
+}
+```
+
+**Git 方式的优势**：
+- 🚀 **始终最新**: 直接使用 GitHub 仓库的最新代码
+- 🔄 **自动更新**: 每次运行都获取最新功能和修复
+- 🛠️ **开发同步**: 与开发进度同步，第一时间体验新功能
+
+**包管理器选择**：
+- **npx**: Node.js 生态标准，兼容性最好
+- **bunx**: Bun 生态，启动更快，性能更佳
+
+### 方式二：包管理器直接使用
+
+无需本地安装，通过包管理器直接运行：
+
+**使用 npx**：
 ```json
 {
   "mcpServers": {
@@ -88,10 +147,30 @@ Yapi Auto MCP Server 是一个基于 [Model Context Protocol](https://modelconte
 }
 ```
 
-### 方式二：使用环境变量
+**使用 bunx**：
+```json
+{
+  "mcpServers": {
+    "yapi-auto-mcp": {
+      "command": "bunx",
+      "args": [
+        "yapi-auto-mcp",
+        "--stdio",
+        "--yapi-base-url=https://yapi.example.com",
+        "--yapi-token=projectId:token1,projectId2:token2",
+        "--yapi-cache-ttl=10",
+        "--yapi-log-level=info"
+      ]
+    }
+  }
+}
+```
+
+### 方式三：使用环境变量
 
 在 MCP 配置中定义环境变量：
 
+**使用 npx**：
 ```json
 {
   "mcpServers": {
@@ -113,7 +192,28 @@ Yapi Auto MCP Server 是一个基于 [Model Context Protocol](https://modelconte
 }
 ```
 
-### 方式三：本地开发模式
+**使用 bunx**：
+```json
+{
+  "mcpServers": {
+    "yapi-auto-mcp": {
+      "command": "bunx",
+      "args": [
+        "yapi-auto-mcp",
+        "--stdio"
+      ],
+      "env": {
+        "YAPI_BASE_URL": "https://yapi.example.com",
+        "YAPI_TOKEN": "projectId:token1,projectId2:token2",
+        "YAPI_CACHE_TTL": "10",
+        "YAPI_LOG_LEVEL": "info"
+      }
+    }
+  }
+}
+```
+
+### 方式四：本地开发模式
 
 适合需要修改代码或调试的场景：
 
@@ -198,11 +298,15 @@ Token 格式说明：
 
    > "显示用户注册接口的详细信息"
 
-3. **创建新接口**：
+3. **创建新分类**：
+
+   > "在项目 175 中创建一个名为'用户管理'的分类"
+
+4. **创建新接口**：
 
    > "帮我创建一个获取用户列表的接口，路径是 /api/users，使用 GET 方法"
 
-4. **更新接口**：
+5. **更新接口**：
    > "更新用户登录接口，添加验证码参数"
 
 ## 高级配置
@@ -243,9 +347,10 @@ YAPI_LOG_LEVEL=info         # 日志级别：debug, info, warn, error, none
 
 ### 配置方式选择建议
 
-| 使用场景 | 推荐方式              | 优势               |
-| -------- | --------------------- | ------------------ |
-| 日常使用 | npx + 命令行参数      | 无需安装，配置简单 |
-| 团队共享 | npx + 环境变量        | 配置统一，易于管理 |
-| 开发调试 | 本地安装 + SSE 模式   | 便于调试和修改代码 |
-| 企业部署 | 本地安装 + stdio 模式 | 性能更好，更稳定   |
+| 使用场景       | 推荐方式                | 优势                       |
+| -------------- | ----------------------- | -------------------------- |
+| **追求最新功能** | Git 仓库直接使用        | 始终最新，自动获取新功能   |
+| **日常使用**     | npx + 命令行参数        | 无需安装，配置简单         |
+| **团队共享**     | npx + 环境变量          | 配置统一，易于管理         |
+| **开发调试**     | 本地安装 + SSE 模式     | 便于调试和修改代码         |
+| **企业部署**     | 本地安装 + stdio 模式   | 性能更好，更稳定           |

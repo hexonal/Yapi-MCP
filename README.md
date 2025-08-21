@@ -65,6 +65,23 @@ Yapi Auto MCP Server 是一个基于 [Model Context Protocol](https://modelconte
 }
 ```
 
+**或者使用 bunx (推荐 Bun 用户)**：
+```json
+{
+  "mcpServers": {
+    "yapi-auto-mcp": {
+      "command": "bunx",
+      "args": [
+        "yapi-auto-mcp",
+        "--stdio",
+        "--yapi-base-url=https://your-yapi-domain.com",
+        "--yapi-token=projectId:your_token_here"
+      ]
+    }
+  }
+}
+```
+
 3. **开始使用**：重启 Cursor，你就可以在对话中直接操作 YApi 了！
 
 ## 安装配置
@@ -81,7 +98,7 @@ Yapi Auto MCP Server 是一个基于 [Model Context Protocol](https://modelconte
       "command": "npx",
       "args": [
         "--package",
-        "git+https://github.com/lzsheng/Yapi-MCP.git",
+        "git+https://github.com/hexonal/Yapi-MCP.git",
         "yapi-mcp",
         "--stdio",
         "--yapi-base-url=https://yapi.example.com",
@@ -101,8 +118,7 @@ Yapi Auto MCP Server 是一个基于 [Model Context Protocol](https://modelconte
     "yapi-auto-mcp": {
       "command": "bunx",
       "args": [
-        "--bun",
-        "git+https://github.com/lzsheng/Yapi-MCP.git",
+        "git+https://github.com/hexonal/Yapi-MCP.git",
         "--stdio",
         "--yapi-base-url=https://yapi.example.com",
         "--yapi-token=projectId:token1,projectId2:token2",
@@ -120,8 +136,8 @@ Yapi Auto MCP Server 是一个基于 [Model Context Protocol](https://modelconte
 - 🛠️ **开发同步**: 与开发进度同步，第一时间体验新功能
 
 **包管理器选择**：
+- **bunx**: Bun 生态，启动更快，性能更佳（推荐）
 - **npx**: Node.js 生态标准，兼容性最好
-- **bunx**: Bun 生态，启动更快，性能更佳
 
 ### 方式二：包管理器直接使用
 
@@ -155,6 +171,25 @@ Yapi Auto MCP Server 是一个基于 [Model Context Protocol](https://modelconte
       "command": "bunx",
       "args": [
         "yapi-auto-mcp",
+        "--stdio",
+        "--yapi-base-url=https://yapi.example.com",
+        "--yapi-token=projectId:token1,projectId2:token2",
+        "--yapi-cache-ttl=10",
+        "--yapi-log-level=info"
+      ]
+    }
+  }
+}
+```
+
+**使用 bunx + Git 仓库（推荐最新版本）**：
+```json
+{
+  "mcpServers": {
+    "yapi-auto-mcp": {
+      "command": "bunx",
+      "args": [
+        "git+https://github.com/hexonal/Yapi-MCP.git",
         "--stdio",
         "--yapi-base-url=https://yapi.example.com",
         "--yapi-token=projectId:token1,projectId2:token2",
@@ -349,8 +384,9 @@ YAPI_LOG_LEVEL=info         # 日志级别：debug, info, warn, error, none
 
 | 使用场景       | 推荐方式                | 优势                       |
 | -------------- | ----------------------- | -------------------------- |
-| **追求最新功能** | Git 仓库直接使用        | 始终最新，自动获取新功能   |
-| **日常使用**     | npx + 命令行参数        | 无需安装，配置简单         |
+| **追求最新功能** | bunx + Git 仓库         | 始终最新，启动更快         |
+| **日常使用**     | bunx + 包名             | 无需安装，性能更佳         |
+| **Node.js 环境** | npx + 命令行参数        | 兼容性好，配置简单         |
 | **团队共享**     | npx + 环境变量          | 配置统一，易于管理         |
 | **开发调试**     | 本地安装 + SSE 模式     | 便于调试和修改代码         |
 | **企业部署**     | 本地安装 + stdio 模式   | 性能更好，更稳定           |

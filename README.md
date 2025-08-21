@@ -65,7 +65,7 @@ Yapi Auto MCP Server 是一个基于 [Model Context Protocol](https://modelconte
 }
 ```
 
-**或者使用 bunx (推荐 Bun 用户)**：
+**或者使用 bunx (Bun 用户)**：
 ```json
 {
   "mcpServers": {
@@ -136,8 +136,8 @@ Yapi Auto MCP Server 是一个基于 [Model Context Protocol](https://modelconte
 - 🛠️ **开发同步**: 与开发进度同步，第一时间体验新功能
 
 **包管理器选择**：
-- **bunx**: Bun 生态，启动更快，性能更佳（推荐）
-- **npx**: Node.js 生态标准，兼容性最好
+- **npx**: Node.js 生态标准，兼容性最好（推荐）
+- **bunx**: Bun 生态，启动更快，性能更佳
 
 ### 方式二：包管理器直接使用
 
@@ -182,7 +182,7 @@ Yapi Auto MCP Server 是一个基于 [Model Context Protocol](https://modelconte
 }
 ```
 
-**使用 bunx + Git 仓库（推荐最新版本）**：
+**使用 bunx + Git 仓库（Bun 用户最新版本）**：
 ```json
 {
   "mcpServers": {
@@ -384,9 +384,9 @@ YAPI_LOG_LEVEL=info         # 日志级别：debug, info, warn, error, none
 
 | 使用场景       | 推荐方式                | 优势                       |
 | -------------- | ----------------------- | -------------------------- |
-| **追求最新功能** | bunx + Git 仓库         | 始终最新，启动更快         |
-| **日常使用**     | bunx + 包名             | 无需安装，性能更佳         |
-| **Node.js 环境** | npx + 命令行参数        | 兼容性好，配置简单         |
+| **追求最新功能** | npx + Git 仓库          | 始终最新，兼容性最好       |
+| **日常使用**     | npx + 包名              | 无需安装，配置简单         |
+| **Bun 环境**     | bunx + 命令行参数       | 启动更快，性能更佳         |
 | **团队共享**     | npx + 环境变量          | 配置统一，易于管理         |
 | **开发调试**     | 本地安装 + SSE 模式     | 便于调试和修改代码         |
 | **企业部署**     | 本地安装 + stdio 模式   | 性能更好，更稳定           |
